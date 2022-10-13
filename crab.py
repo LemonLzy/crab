@@ -10,6 +10,9 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver import ActionChains
 
+import compare_cv2
+import crop_cv
+
 
 class Crab:
     """ 防水墙滑动验证码破解 使用OpenCV库 成功率大概90%左右"""
@@ -92,7 +95,7 @@ class Crab:
         driver = self.driver
         driver.implicitly_wait(5)
         driver.get(self.url)
-        driver.maximize_window()
+        # driver.maximize_window()
 
         for no in no_list:
             print("当前尝试的卡号：" + no)
@@ -105,20 +108,8 @@ class Crab:
             btn_search = driver.find_element(By.ID, 'btnSearch')
             btn_search.click()
 
-            # switch 到 滑块frame
-            # driver.switch_to.frame(driver.find_element(By.ID, 'light2'))
-            # time.sleep(0.5)
-            bk_block = driver.find_element(By.XPATH, '//*[@id="captcha"]/canvas[1]')  # 大图
-            web_image_width = bk_block.size
-            web_image_width = web_image_width['width']
-            print("web_image_width: ", web_image_width)
-            bk_block_x = bk_block.location['x']
-            print("bk_block_x: ", bk_block_x)
-
-            slide_block = driver.find_element(By.XPATH, '//*[@id="captcha"]/canvas[2]')  # 小滑块
-            slide_block_x = slide_block.location['x']
-            print("slide_block_x: ", slide_block_x)
-
+            # 等待，避免下载图片时图片未加载完毕，导致下载图片为空
+            time.sleep(2)
             # 下载完整的滑动拼图
             # bk_block = driver.find_element(By.XPATH, '//img[@id="slideBg"]').get_attribute('src')  # 大图 url
             js = f'''return document.getElementsByTagName("canvas")[0].toDataURL("image/png");'''  # 数字表示第几个canvas
@@ -147,27 +138,33 @@ class Crab:
             # self.urllib_download(slide_block, './image/slideBlock.png')
             # time.sleep(0.5)
 
+            # 处理侧边栏图片
+            crop_cv.main()
+
             # 使用opencv识别缺口位置，并移动滑块
             img_bkblock = Image.open('./img/bkBlock.png')
             real_width = img_bkblock.size[0]
             print("real_width: ", real_width)
-            width_scale = float(real_width) / float(web_image_width)
+            # width_scale = float(real_width) / float(web_image_width)
+            width_scale = 1.0
             print("width_scale: ", width_scale)
 
-            position = self.get_position('./img/bkBlock.png', './img/slideBlock.png')
-            print("position: ", position)
-            real_position = position[1] / width_scale
-            real_position = real_position - (slide_block_x - bk_block_x)
+            position = compare_cv2.identify_gap('./img/bkBlock.png', './img/tp.png', './img/out.png')
+            # print("position: ", position)
+            # real_position = position[1] / width_scale
+            # real_position = real_position - (slide_block_x - bk_block_x)
+            real_position = position + 5
             print("real_position: ", real_position)
 
-            track_list = self.get_track(real_position + 4)
-            print("track_list: ", track_list)
+            # track_list = self.get_track(real_position + 4)
+            # print("track_list: ", track_list)
             ActionChains(driver).click_and_hold(on_element=slid_ing).perform()  # 点击鼠标左键，按住不放
             time.sleep(0.2)
+            ActionChains(driver).move_by_offset(xoffset=real_position, yoffset=0).perform()
             # print('第二步,拖动元素')
-            for track in track_list:
-                ActionChains(driver).move_by_offset(xoffset=track, yoffset=0).perform()  # 鼠标移动到距离当前位置（x,y）
-                time.sleep(0.002)
+            # for track in track_list:
+            #     ActionChains(driver).move_by_offset(xoffset=track, yoffset=0).perform()  # 鼠标移动到距离当前位置（x,y）
+            #     time.sleep(0.002)
             # ActionChains(driver).move_by_offset(xoffset=-random.randint(0, 1), yoffset=0).perform() # 微调，根据实际情况微调
             time.sleep(1)
             # print('第三步,释放鼠标')
