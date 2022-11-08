@@ -5,10 +5,9 @@ from selenium.webdriver.common.by import By
 
 
 class Crab:
-    """ 防水墙滑动验证码破解 使用OpenCV库 成功率大概90%左右"""
+    """ 防水墙滑动验证码破解 使用OpenCV库"""
 
     def __init__(self):
-        # 如果是实际应用中，可在此处账号和密码
         self.url = "http://xrj.360xie.cn"
         self.driver = webdriver.Chrome()
 
