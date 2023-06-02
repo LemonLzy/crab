@@ -4,7 +4,7 @@ import cv2
 def identify_gap(bg, tp, out):
     """
     bg: 背景图片
-    tp: 缺口图片
+    tp: 处理过后的缺口图片
     out:输出图片
     """
     # 读取背景图片和缺口图片
@@ -25,9 +25,9 @@ def identify_gap(bg, tp, out):
 
     # 绘制方框
     th, tw = tp_pic.shape[:2]
-    print(th, tw)
+    # print(th, tw)
     tl = max_loc  # 左上角点的坐标
-    print(tl)
+    # print(tl)
     br = (tl[0] + tw, tl[1] + th)  # 右下角点的坐标
     cv2.rectangle(bg_img, tl, br, (0, 0, 255), 2)  # 绘制矩形
     cv2.imwrite(out, bg_img)  # 保存在本地

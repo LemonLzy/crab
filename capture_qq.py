@@ -178,15 +178,15 @@ class Login(object):
         slid_ing = driver.find_element(By.XPATH, '//div[@id="tcaptcha_drag_thumb"]')  # 滑块
 
         os.makedirs('./image/', exist_ok=True)
-        self.urllib_download(bk_block, './image/bkBlock.png')
-        self.urllib_download(slide_block, './image/slideBlock.png')
+        self.urllib_download(bk_block, './image/search_background.png')
+        self.urllib_download(slide_block, './image/search_slide.png')
         time.sleep(0.5)
         img_bkblock = Image.open('./image/bkBlock.png')
         real_width = img_bkblock.size[0]
         print("real_width: ", real_width)
         width_scale = float(real_width) / float(web_image_width)
         print("width_scale: ", width_scale)
-        position = self.get_postion('./image/bkBlock.png', './image/slideBlock.png')
+        position = self.get_postion('./image/search_background.png', './image/search_slide.png')
         real_position = position[1] / width_scale
         print("real_position1: ", real_position)
         real_position = real_position - (slide_block_x - bk_block_x)
