@@ -1,5 +1,7 @@
+import random
+import time
+from selenium.webdriver import ActionChains
 from selenium.webdriver.common.by import By
-
 from crab import Crab
 from utils.graph import Graph
 
@@ -12,7 +14,9 @@ class Search(Crab):
     def run(self, no):
         self.pre_attach()
         self.process_no(no)
-        Graph(self.__class__.__name__).run(self.driver)
+        slide_dis = Graph(self.__class__.__name__).run(self.driver)
+        self.slide(slide_dis)
+        self.driver.close()
 
     def pre_attach(self):
         self.driver.get(self.url)
@@ -37,9 +41,23 @@ class Search(Crab):
         """
         card_no = self.driver.find_element(By.ID, 'txtCardNo')
         card_no.send_keys(no)
-
         btn_search = self.driver.find_element(By.ID, 'btnSearch')
         btn_search.click()
+
+    def slide(self, slide_dis: int):
+        """
+        滑动滑块
+        """
+        slid_ing = self.driver.find_element(By.XPATH, '//*[@id="captcha"]/div[2]/div/div')  # 滑块
+        ActionChains(self.driver).click_and_hold(on_element=slid_ing).perform()  # 点击鼠标左键，按住不放
+        time.sleep(0.2)
+        # print('第二步,拖动元素')
+        ActionChains(self.driver).move_by_offset(xoffset=slide_dis, yoffset=0).perform()
+        ActionChains(self.driver).move_by_offset(xoffset=-random.randint(0, 1), yoffset=0).perform()  # 微调，根据实际情况微调
+        time.sleep(0.2)
+        # print('第三步,释放鼠标')
+        ActionChains(self.driver).release(on_element=slid_ing).perform()
+        time.sleep(2)
 
 
 if __name__ == '__main__':
