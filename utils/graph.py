@@ -11,7 +11,7 @@ CANNY_THRESHOLD2 = 450
 class Graph:
     def __init__(self, source):
         self.source = source
-        self.img_dir = "./img/"
+        self.img_dir = "../img/"
         self.slide = f"{self.img_dir}{self.source}_slide.png"
         self.background = f"{self.img_dir}{self.source}_background.png"
         self.rectangle = f"{self.img_dir}{self.source}_rectangle.png"

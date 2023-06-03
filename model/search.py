@@ -1,6 +1,3 @@
-import random
-import time
-from selenium.webdriver import ActionChains
 from selenium.webdriver.common.by import By
 from crab_basic import CrabBasic
 from utils.graph import Graph
