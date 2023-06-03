@@ -1,5 +1,7 @@
 import random
 import time
+
+from selenium.common import NoSuchElementException
 from selenium.webdriver import ActionChains
 from selenium.webdriver.common.by import By
 from crab import Crab
@@ -9,7 +11,6 @@ from utils.graph import Graph
 class Search(Crab):
     def __init__(self):
         super().__init__()
-        self.url = "http://xrj.360xie.cn/"
 
     def run(self, no):
         self.pre_attach()
@@ -28,9 +29,12 @@ class Search(Crab):
             self.driver.switch_to.default_content()
 
         # 确认本站公告
-        a_next = self.driver.find_element(By.ID, 'aNext')
-        if a_next:
-            a_next.click()
+        try:
+            a_next = self.driver.find_element(By.ID, 'aNext')
+            if a_next:
+                a_next.click()
+        except NoSuchElementException:
+            pass
 
         # 跳转至查询页面
         self.driver.find_element(By.ID, 'checkp').click()
