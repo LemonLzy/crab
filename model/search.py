@@ -1,9 +1,9 @@
 from selenium.webdriver.common.by import By
-from crab_basic import CrabBasic
+from waterfall import WaterFull
 from utils.graph import Graph
 
 
-class Search(CrabBasic):
+class Search(WaterFull):
     def __init__(self):
         super().__init__()
 

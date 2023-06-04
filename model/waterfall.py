@@ -9,7 +9,7 @@ from utils.driver import driver
 from utils.graph import Graph
 
 
-class CrabBasic:
+class WaterFull:
     """ 防水墙滑动验证码破解 使用OpenCV库 成功率大概90%左右"""
 
     def __init__(self):

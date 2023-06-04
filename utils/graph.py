@@ -1,6 +1,9 @@
 import base64
 import time
 import cv2
+from urllib.request import urlretrieve
+
+from selenium.webdriver.common.by import By
 
 GAUSSIAN_BLUR_KERNEL_SIZE = (5, 5)
 GAUSSIAN_BLUR_SIGMA_X = 0
@@ -21,11 +24,14 @@ class Graph:
         """
         下载图片，处理滑块
         """
-        self.download(driver)
+        if self.source == "DoubleZero7":
+            self.download_src(driver)
+        else:
+            self.download_canvas(driver)
         self.pre_attach()
         self.identify_gap()
 
-    def download(self, driver):
+    def download_canvas(self, driver):
         """
         下载背景图片和小滑块
         """
@@ -52,6 +58,15 @@ class Graph:
         with open(self.slide, "wb+") as f:
             f.write(slide_block)
             f.close()
+
+    def download_src(self, driver):
+        # 背景图片 url
+        background_block = driver.find_element(By.XPATH, '//img[@id="slideBg"]').get_attribute('src')
+        urlretrieve(background_block, self.background)
+
+        # 小滑块 图片url
+        slide_block = driver.find_element(By.XPATH, '//img[@id="slideBlock"]').get_attribute('src')
+        urlretrieve(slide_block, self.slide)
 
     def pre_attach(self):
         """
